@@ -71,7 +71,7 @@ app.post("/api/contacts", function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
 
-  if (!req.body.name) {
+  if (!req.body.email) {
     return handleError(res, "Invalid user input", "É necessário informar o email", 400);
   }
 
