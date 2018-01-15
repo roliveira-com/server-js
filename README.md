@@ -2,6 +2,14 @@
 
 This is a simple contacts database using Express and MongoDB to be deployed on Heroku.
 
+## Setup Tips
+
+Starting a local MongoDB  
+`mongo --host 127.0.0.1:27017 --quiet`
+
+Launch the server locally  
+`npm start`
+
 ## Useful Articles
 
 - [Create a Web App and RESTful API Server Using the MEAN Stack](https://devcenter.heroku.com/articles/mean-apps-restful-api)

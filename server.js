@@ -104,7 +104,7 @@ app.post("/api/login", function(req, res) {
     if (err) {
       return handleError(res, err.message, "Não foi possível acessar os dados");
     } else if (docs.length == 0) {
-      return handleError(res, "Email não encontrado", "E-mail incorreto");
+      return handleError(res, "Email não encontrado", "E-mail incorreto", 403);
     } else if (docs.length != 1){
       return handleError(res, "Dados Duplicados", "Não foi possível efetuar o login, contate-nos");
     } else if (docs.length == 1){
@@ -144,14 +144,6 @@ app.post("/api/contacts", handleAuthorization, function(req, res) {
   if (req.body.email) {
     handleDupes(newContact, res, req.body.email);
   }
-
-  // db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
-  //   if (err) {
-  //     handleError(res, err.message, "Failed to create new contact.");
-  //   } else {
-  //     res.status(201).json(doc.ops[0]);
-  //   }
-  // });
 });
 
 /*  "/api/contacts/:id"
