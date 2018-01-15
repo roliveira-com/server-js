@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
+var jwt = require("jsonwebtoken");
 
 var CONTACTS_COLLECTION = "contacts";
 
@@ -15,7 +16,7 @@ app.use(express.static(distDir));
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "ds255797.mlab.com:55797/heroku_6l9r51x8" , function (err, database) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017" , function (err, database) {
   if (err) {
     console.log(err);
     process.exit(1);
@@ -40,20 +41,87 @@ function handleError(res, reason, message, code) {
   res.status(code || 500).json({"error": message});
 }
 
+handleAuthorization = (req, resp, next) => {
+  const token = extractToken(req);
+  if(!token) {
+    resp.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
+    resp.status(401).json({'error': 'Você precisa se autenticar'});
+  }else{
+    jwt.verify(token, 'server-api-pass', (error, decoded) => {
+      if(decoded) {
+        next();
+      }else{
+        return handleError(res, "FORBBIDEN", "Não Autorizado");
+      }
+    })
+  }
+}
+
+function extractToken(req){
+  let token = undefined;
+  if(req.headers && req.headers.authorization){
+    const parts = req.headers.authorization.split(' ');
+    if(parts.length === 2 && parts[0] === 'Bearer'){
+      token = parts[1];
+    }
+  }
+  return token;
+}
+
 /*  "/api/contacts"
  *    GET: finds all contacts
  *    POST: creates a new contact
  */
 
-function handleDupes(email){
-  db.collection(CONTACTS_COLLECTION).find({"email": email}).toArray(function(err, docs) {
+function handleDupes(data, res, email){
+  db.collection(CONTACTS_COLLECTION).find({"email": email }).toArray(function(err, docs) {
     if (err) {
       return handleError(res, err.message, "Não foi possível acessar os dados");
+    }  else if (docs.length >= 1) {
+      return handleError(res, "Email Já Cadastrado", "Email já Cadastrado!");
     } else {
-      return true
+
+      db.collection(CONTACTS_COLLECTION).insertOne(data, function(err, doc) {
+        if (err) {
+          return handleError(res, err.message, "Failed to create new contact.");
+        } else {
+          res.status(201).json(doc.ops[0]);
+        }
+      });
+
     }
   });
 }
+
+app.post("/api/login", function(req, res) {
+  var user = req.body;
+
+  if(!user.email || !user.senha) {
+    return handleError(res, "DADOS INVÁLIDOS", "É necessário informar email e senha para efetuar o login", 400);
+  }
+
+  db.collection(CONTACTS_COLLECTION).find({"email": user.email }).toArray(function(err, docs) {
+    if (err) {
+      return handleError(res, err.message, "Não foi possível acessar os dados");
+    } else if (docs.length == 0) {
+      return handleError(res, "Email não encontrado", "E-mail incorreto");
+    } else if (docs.length != 1){
+      return handleError(res, "Dados Duplicados", "Não foi possível efetuar o login, contate-nos");
+    } else if (docs.length == 1){
+      if(user.senha == docs[0].senha){
+        var token = jwt.sign({sub: docs[0].email, iss: 'server-api'}, 'server-api-pass');
+        res.status(200).json({
+          name: docs[0].nome,
+          email: docs[0].email,
+          token: token  
+        })
+      }else{
+        return handleError(res, "FORBIDDEN", "Senha incorreta", 403);
+      }
+    }
+  });
+});
+
 
 app.get("/api/contacts", function(req, res) {
   db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
@@ -65,7 +133,7 @@ app.get("/api/contacts", function(req, res) {
   });
 });
 
-app.post("/api/contacts", function(req, res) {
+app.post("/api/contacts", handleAuthorization, function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
 
@@ -73,20 +141,18 @@ app.post("/api/contacts", function(req, res) {
     return handleError(res, "Invalid user input", "É necessário informar o email", 400);
   }
 
-  console.log("query para DB "+newContact.email);
-  db.collection(CONTACTS_COLLECTION).find({"email":newContact.email}).toArray(function(err, docs) {
-    if (err) {
-      handleError(res, err.message, "Failed to get contacts.");
-    } else {
-      db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
-        if (err) {
-          handleError(res, err.message, "Failed to create new contact.");
-        } else {
-          res.status(201).json(doc.ops[0]);
-        }
-      });
-    }
-  });
+  if (req.body.email) {
+    handleDupes(newContact, res, req.body.email);
+  }
+
+  // db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
+  //   if (err) {
+  //     handleError(res, err.message, "Failed to create new contact.");
+  //   } else {
+  //     res.status(201).json(doc.ops[0]);
+  //   }
+  // });
+});
 
 /*  "/api/contacts/:id"
  *    GET: find contact by id
