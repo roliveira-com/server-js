@@ -88,9 +88,6 @@ app.post("/api/contacts", function(req, res) {
     }
   });
 
-
-}
-
 /*  "/api/contacts/:id"
  *    GET: find contact by id
  *    PUT: update contact by id
