@@ -76,7 +76,7 @@ app.post("/api/contacts", function(req, res) {
   }
 
   if (req.body.email) {
-    return handleDupes(req.body.email);
+    return handleDupes(newContact.email);
   }
 
   db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
