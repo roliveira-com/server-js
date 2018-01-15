@@ -1,0 +1,19 @@
+{
+  "name": "contacts-database",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "core-js": "^2.4.1",
+    "express": "^4.15.2",
+    "mongodb": "^2.2.26"
+  },
+  "devDependencies": {
+    "ts-node": "~2.0.0",
+    "typescript": "~2.2.0"
+  }
+}
