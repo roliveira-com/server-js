@@ -49,8 +49,6 @@ function handleDupes(email){
   db.collection(CONTACTS_COLLECTION).find({"email": email}).toArray(function(err, docs) {
     if (err) {
       return handleError(res, err.message, "Não foi possível acessar os dados");
-    } else if (docs.length > 1) {
-      return false;
     } else {
       return true
     }
@@ -75,18 +73,23 @@ app.post("/api/contacts", function(req, res) {
     return handleError(res, "Invalid user input", "É necessário informar o email", 400);
   }
 
-  if (req.body.email) {
-    return handleDupes(newContact.email);
-  }
-
-  db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
+  console.log("query para DB "+newContact.email);
+  db.collection(CONTACTS_COLLECTION).find({"email":newContact.email}).toArray(function(err, docs) {
     if (err) {
-      handleError(res, err.message, "Failed to create new contact.");
+      handleError(res, err.message, "Failed to get contacts.");
     } else {
-      res.status(201).json(doc.ops[0]);
+      db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
+        if (err) {
+          handleError(res, err.message, "Failed to create new contact.");
+        } else {
+          res.status(201).json(doc.ops[0]);
+        }
+      });
     }
   });
-});
+
+
+}
 
 /*  "/api/contacts/:id"
  *    GET: find contact by id
