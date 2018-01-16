@@ -1,6 +1,5 @@
 
 var auth_jwt = require("jsonwebtoken");
-
 var error = require('../error/handle-error');
 var TABLE = require('../configs/db-collections')
 
