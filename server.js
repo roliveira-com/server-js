@@ -4,6 +4,7 @@ var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 var jwt = require("jsonwebtoken");
 
+var initdb = require('./database/connect')
 var error = require('./error/handle-error');
 var auth = require('./auth/auth.provider');
 var TABLE = require('./configs/db-collections');
@@ -14,19 +15,38 @@ var CONTACTS_COLLECTION = "contacts";
 var app = express();
 app.use(bodyParser.json());
 
-var distDir = __dirname + "/dist/";
-app.use(express.static(distDir));
+// var distDir = __dirname + "/dist/";
+// app.use(express.static(distDir));
 
-
-var db;
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017" , function (err, database) {
+initdb(function (err, dbs) {
   if (err) {
-    console.log(err);
+    console.error('Failed to make all database connections!');
+    console.error(err);
     process.exit(1);
+  }else{
+    console.log('Connection suceeded')
   }
-  db = database;
-  console.log("Database connection ready");
+
+  app.post('/api/login', auth.app.handleLogin(app,dbs));
+
+  var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+  });
+
+
 });
+
+
+// var db;
+// mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017" , function (err, database) {
+//   if (err) {
+//     console.log(err);
+//     process.exit(1);
+//   }
+//   db = database;
+//   console.log("Database connection ready");
+// });
 
 function handleDupes(data, res, email){
   db.collection(TABLE.collections.contacts).find({"email": email }).toArray(function(err, docs) {
@@ -48,8 +68,6 @@ function handleDupes(data, res, email){
   });
 }
 
-app.post("/api/login", auth.handleLogin);
-
 app.get("/api/contacts", function(req, res) {
   db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
@@ -60,7 +78,7 @@ app.get("/api/contacts", function(req, res) {
   });
 });
 
-app.post("/api/contacts", auth.handleAuthorization, function(req, res) {
+app.post("/api/contacts", function(req, res) {
   var newContact = req.body;
   newContact.createDate = new Date();
 
@@ -113,8 +131,4 @@ app.delete("/api/contacts/:id", function(req, res) {
   });
 });
 
-var server = app.listen(process.env.PORT || 8080, function () {
-  var port = server.address().port;
-  console.log("App now running on port", port);
-});
 
