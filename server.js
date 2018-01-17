@@ -1,7 +1,7 @@
 var express = require("express");
 var database = require('./database')
 var bodyParser = require("body-parser");
-var initdb = require('./database/connect')
+var initdb = require('./database')
 var auth = require('./auth/auth.provider')
 
 
@@ -9,6 +9,8 @@ var app = express();
 app.use(bodyParser.json());
 
 database.connect(function() {
+
+  app.get('/api/tokens', database.getTokens);
 
   app.post('/api/login', database.login);
 

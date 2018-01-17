@@ -27,12 +27,21 @@ exports.getUserByEmail = function(email, callback){
 
 exports.login = function(req,res){
   db.collection(TABLE.collections.contacts).find({"email":req.body.email}).toArray(function(err, docs) {
-    auth.loginHandler(req,res,docs);
+    if (err){
+      return error.handleError(res, err.message, "Não foi possível efetuar o login. Tente mais tarde");
+    }
+    auth.loginRegister(req, res, auth.loginHandler(req,res,docs), db);
   });
 }
 
 exports.getContacts = function(req,res){
   db.collection(TABLE.collections.contacts).find({}).toArray(function(err, docs) {
+    res.status(200).json(docs);
+  });
+}
+
+exports.getTokens = function(req,res){
+  db.collection(TABLE.collections.token).find({}).toArray(function(err, docs) {
     res.status(200).json(docs);
   });
 }
