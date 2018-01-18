@@ -5,7 +5,7 @@ var ObjectID = mongodb.ObjectID;
 var auth = require('../auth');
 var status = require('../status');
 var configs = require('../configs');
-var database = require('../database/db');
+var database = require('../database');
 
 
 var db;
@@ -19,27 +19,19 @@ exports.connect = function(callback) {
   });
 }
 
-exports.getUserByEmail = function(email, callback){
-  db.collection(configs.collections.contacts).find({"email":email}).toArray(function(err, docs) {
-    callback(docs);
+exports.login = function(req,res){
+  database.searchData({"email":req.body.email}, res, db, configs.collections.contacts, function(docs){
+    auth.loginRegister(req, res, auth.loginHandler(req,res,docs), db);
   });
 };
 
-exports.login = function(req,res){
-  db.collection(configs.collections.contacts).find({"email":req.body.email}).toArray(function(err, docs) {
-    if (err){
-      return error.handleError(res, err.message, configs.messages.databaseLogin);
-    }
-    auth.loginRegister(req, res, auth.loginHandler(req,res,docs), db);
-  });
-}
 
 exports.provideAuthorization = function (req, res, next) {
-  db.collection(configs.collections.token).find({ token : auth.extractToken(req) }).toArray(function (err, docs) {
-    if (err) throw err
+  database.searchData({ token : auth.extractToken(req) }, res, db, configs.collections.token, function(docs){
     auth.handleAuthorization(req, res, next, docs);
-  })
-}
+  });
+};
+
 
 exports.getContacts = function(req,res){
   database.getData(res, db, configs.collections.contacts, function(docs){
@@ -47,39 +39,34 @@ exports.getContacts = function(req,res){
   })
 }
 
-// exports.getContacts = function(req,res){
-//   db.collection(configs.collections.contacts).find({}).toArray(function(err, docs) {
-//     status.handleResponse(res,docs);
-//   });
-// }
 
 exports.getTokens = function(req,res){
-  db.collection(configs.collections.token).find({}).toArray(function(err, docs) {
+  database.getData(res, db, configs.collections.token, function(docs){
     status.handleResponse(res,docs,201);
   });
-}
+};
+
 
 exports.registerUser = function(req,res){
-  exports.getUserByEmail(req.body.email, function(docs){
+  database.searchData({email:req.body.email}, res, db, configs.collections.contacts, function(docs){
     if(docs.length == 0){
-      db.collection(configs.collections.contacts).insertOne(req.body, function(err, doc) {
+      database.insertData(req.body, res, db, configs.collections.contacts, function(doc){
         status.handleResponse(res, doc.ops[0]);
       });
     }else{
       status.handleError(res, "EMAIL JÁ CADASTRADO", configs.messages.databasePostEmail);
-    }
+    };
   });
-}
+};
+
 
 exports.deleteUser = function(req,res){
-  db.collection(configs.collections.contacts).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
-    if (err) {
-      status.handleError(res, err.message, configs.messages.databaseDelete);
-    } else {
-      status.handleResponse(res);
-    }
+  database.deleteData({_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(result){
+    console.log(result.document);
+    status.handleResponse(res);
   });
-}
+};
+
 
 exports.getContactById = function(req,res){
   database.searchData({ _id: new ObjectID(req.params.id) }, res, db, configs.collections.contacts, function(doc){
@@ -87,25 +74,10 @@ exports.getContactById = function(req,res){
   })
 }
 
-// exports.getContactById = function(req,res){
-//   db.collection(configs.collections.contacts).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
-//     if (err || undefined || null) {
-//       status.handleError(res, err.message, configs.messages.databaseGet);
-//     } else {
-//       status.handleResponse(res, doc);
-//     }
-//   });
-// }
 
 exports.updateUser = function(req,res){
-  var updateDoc = req.body;
-  delete updateDoc._id;
-  db.collection(configs.collections.contacts).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
-    if (err) {
-      status.handleError(res, err.message, configs.messages.databaseUpdate);
-    } else {
-      status.handleResponse(res);
-    }
+  database.updateData(req.body, {_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(doc){
+    status.handleResponse(res);
   });
 }
 

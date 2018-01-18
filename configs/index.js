@@ -8,7 +8,7 @@ exports.collections = {
 exports.token = {
   issuer: "roliveira-api",
   passcode: "sds9d8d7s7s9ad7s7a7d67ds8a7d" || process.env.JWT_PASSCODE,
-  expire: 300000 //300000/5mins - 3600000/1hr - 86400000/1d...;
+  expire: 900000 //300000/5mins - 3600000/1hr - 86400000/1d...;
 }
 
 exports.database = {

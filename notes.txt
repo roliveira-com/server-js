@@ -23,18 +23,3 @@ Concentra os controllers de cada rota. Por sua vez, estes controllers dependes d
 
 /status
 métodos responsável por encapsular e abstrair os responses para as requisições no endpoint
-
-
-var tokenHandler = {
-
-  created : function(){
-    var moment = new Date();
-    return moment.getTime();
-  },
-
-  expire : function(){
-    var expiration = this.created() + 300000; //300000/5mins - 3600000/1hr - 86400000/1d;
-    return expiration;
-  }
-
-}
