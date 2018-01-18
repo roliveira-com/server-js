@@ -5,6 +5,7 @@ var ObjectID = mongodb.ObjectID;
 var auth = require('../auth/login');
 var error = require('../error/handle-error');
 var TABLE = require('../configs/db-collections');
+var routeAuth = require('../auth/auth.provider');
 
 var DATABASE_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017"
 
@@ -32,6 +33,13 @@ exports.login = function(req,res){
     }
     auth.loginRegister(req, res, auth.loginHandler(req,res,docs), db);
   });
+}
+
+exports.provideAuthorization = function (req, res, next) {
+  db.collection(TABLE.collections.token).find({ token : routeAuth.extractToken(req) }).toArray(function (err, docs) {
+    if (err) throw err
+    routeAuth.handleAuthorization(req, res, next, docs);
+  })
 }
 
 exports.getContacts = function(req,res){

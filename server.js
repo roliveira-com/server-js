@@ -18,11 +18,11 @@ database.connect(function() {
 
   app.get('/api/contacts/:id', database.getContactById);
 
-  app.put('/api/contacts/:id', auth.handleAuthorization, database.updateUser)
+  app.put('/api/contacts/:id', database.provideAuthorization, database.updateUser)
 
-  app.post('/api/contacts', auth.handleAuthorization, database.registerUser);
+  app.post('/api/contacts', database.provideAuthorization, database.registerUser);
 
-  app.delete('/api/contacts/:id', auth.handleAuthorization, database.deleteUser);
+  app.delete('/api/contacts/:id', database.provideAuthorization, database.deleteUser);
 
   var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;

@@ -31,11 +31,12 @@ exports.loginHandler = function(req,res,docs){
 
 exports.loginRegister = function(req, res, token, db){
   if(token){
+    var date = new Date();
     db.collection(TABLE.collections.token).insertOne({
       email: req.body.email,
       token: token,
-      created: 'date',
-      expire: 'date'
+      created: date.getTime(),
+      expire: date.getTime() + 300000 //5mins
     }, function(err, doc) {
       if (err) {
         throw err;

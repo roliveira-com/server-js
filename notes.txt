@@ -1,0 +1,17 @@
+[
+    {
+        "_id": "5a5fed45d911d3180974a7c7",
+        "email": "ze@zeh.com",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6ZUB6ZWguY29tIiwiaXNzIjoic2VydmVyLWFwaSIsImlhdCI6MTUxNjIzNjEwMX0.CuP7sMUARI0KU1rfd9sfSk7to0Gzq1KDZILm_2RGuhI",
+        "created": "date",
+        "expire": "date"
+    }
+]
+
+    {
+        "_id": "5a5ffb5b159abc18bfdce200",
+        "email": "lucio@drogas.com",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpb0Bkcm9nYXMuY29tIiwiaXNzIjoic2VydmVyLWFwaSIsImlhdCI6MTUxNjIzOTcwN30.ZGGhmTndbgiFfTCOC_5_AcBGkHbgxjxxu7Th92iqbao",
+        "created": 1516239707182,
+        "expire": 1516240007182
+    }
