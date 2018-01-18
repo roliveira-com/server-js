@@ -1,32 +1,30 @@
 var express = require("express");
-var database = require('./database')
 var bodyParser = require("body-parser");
-var initdb = require('./database')
-var auth = require('./auth/auth.provider')
-
+var route = require('./routes')
+var auth = require('./auth')
 
 var app = express();
 app.use(bodyParser.json());
 
-database.connect(function() {
+route.connect(function() {
 
-  app.get('/api/tokens', database.getTokens);
+  app.get('/api/tokens', route.getTokens);
 
-  app.post('/api/login', database.login);
+  app.post('/api/login', route.login);
 
-  app.get('/api/contacts', database.getContacts);
+  app.get('/api/contacts', route.getContacts);
 
-  app.get('/api/contacts/:id', database.getContactById);
+  app.get('/api/contacts/:id', route.getContactById);
 
-  app.put('/api/contacts/:id', database.provideAuthorization, database.updateUser)
+  app.put('/api/contacts/:id', route.provideAuthorization, route.updateUser)
 
-  app.post('/api/contacts', database.provideAuthorization, database.registerUser);
+  app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 
-  app.delete('/api/contacts/:id', database.provideAuthorization, database.deleteUser);
+  app.delete('/api/contacts/:id', route.provideAuthorization, route.deleteUser);
 
   var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
-    console.log("App now running on port", port);
+    console.log("Servidor disponível na porta: ", port);
   });
 });
 

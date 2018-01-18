@@ -1,17 +1,25 @@
-[
-    {
-        "_id": "5a5fed45d911d3180974a7c7",
-        "email": "ze@zeh.com",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6ZUB6ZWguY29tIiwiaXNzIjoic2VydmVyLWFwaSIsImlhdCI6MTUxNjIzNjEwMX0.CuP7sMUARI0KU1rfd9sfSk7to0Gzq1KDZILm_2RGuhI",
-        "created": "date",
-        "expire": "date"
-    }
-]
+PASTAS E/OU PARA DELETAR:
 
-    {
-        "_id": "5a5ffb5b159abc18bfdce200",
-        "email": "lucio@drogas.com",
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpb0Bkcm9nYXMuY29tIiwiaXNzIjoic2VydmVyLWFwaSIsImlhdCI6MTUxNjIzOTcwN30.ZGGhmTndbgiFfTCOC_5_AcBGkHbgxjxxu7Th92iqbao",
-        "created": 1516239707182,
-        "expire": 1516240007182
-    }
+/auth/auth.provider.js
+/auth/login.js
+/configs/database.js
+/configs/db-collections.js
+/error
+/user
+
+NOVA ESTRUTURA DE PASTAS
+
+/auth
+Abrigará toda a middleware de autenticação 
+
+/configs
+Constantes que concentram configurações de tokens, uri do banco de dados, collections do banco de dados e mensagens
+
+/database
+Consolida todos os métodos de acesso ao banco.
+
+/routes
+Concentra os controllers de cada rota. Por sua vez, estes controllers dependes dos métodos em /auth e /databases, além das configuraçoes em /configs
+
+/status
+métodos responsável por encapsular e abstrair os responses para as requisições no endpoint
