@@ -5,6 +5,7 @@ var ObjectID = mongodb.ObjectID;
 var auth = require('../auth');
 var status = require('../status');
 var configs = require('../configs');
+var database = require('../database/db');
 
 
 var db;
@@ -41,10 +42,16 @@ exports.provideAuthorization = function (req, res, next) {
 }
 
 exports.getContacts = function(req,res){
-  db.collection(configs.collections.contacts).find({}).toArray(function(err, docs) {
+  database.getData(res, db, configs.collections.contacts, function(docs){
     status.handleResponse(res,docs);
-  });
+  })
 }
+
+// exports.getContacts = function(req,res){
+//   db.collection(configs.collections.contacts).find({}).toArray(function(err, docs) {
+//     status.handleResponse(res,docs);
+//   });
+// }
 
 exports.getTokens = function(req,res){
   db.collection(configs.collections.token).find({}).toArray(function(err, docs) {
@@ -59,7 +66,7 @@ exports.registerUser = function(req,res){
         status.handleResponse(res, doc.ops[0]);
       });
     }else{
-      status.handleResponse(res, configs.messages.databasePostEmail);
+      status.handleError(res, "EMAIL JÁ CADASTRADO", configs.messages.databasePostEmail);
     }
   });
 }
@@ -75,14 +82,20 @@ exports.deleteUser = function(req,res){
 }
 
 exports.getContactById = function(req,res){
-  db.collection(configs.collections.contacts).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
-    if (err || undefined || null) {
-      status.handleError(res, err.message, configs.messages.databaseGet);
-    } else {
-      status.handleResponse(res, doc);
-    }
-  });
+  database.searchData({ _id: new ObjectID(req.params.id) }, res, db, configs.collections.contacts, function(doc){
+    status.handleResponse(res, doc);
+  })
 }
+
+// exports.getContactById = function(req,res){
+//   db.collection(configs.collections.contacts).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+//     if (err || undefined || null) {
+//       status.handleError(res, err.message, configs.messages.databaseGet);
+//     } else {
+//       status.handleResponse(res, doc);
+//     }
+//   });
+// }
 
 exports.updateUser = function(req,res){
   var updateDoc = req.body;

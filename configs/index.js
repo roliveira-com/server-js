@@ -8,7 +8,7 @@ exports.collections = {
 exports.token = {
   issuer: "roliveira-api",
   passcode: "sds9d8d7s7s9ad7s7a7d67ds8a7d" || process.env.JWT_PASSCODE,
-  expire: 300000 //5mins - 3600000/1hr - 86400000/1d
+  expire: 300000 //300000/5mins - 3600000/1hr - 86400000/1d...;
 }
 
 exports.database = {
@@ -26,7 +26,8 @@ exports.messages = {
   loginEmail : "Email não encontrado",
   loginGeneric : "Não foi possível efetuar o login, contate-nos",
   loginParamsRequired: "É necessário informar e-mail e senha para fazer o login",
-  authDenied: "Você precisa se autenticar",
+  authRequired: "Você precisa se autenticar",
+  authGeneric: "Seu login não foi possível. Contate-nos",
   tokenExpired: "Token Expirado. Faça um novo login",
   tokenInvalid: "Token inválido ou expirado"
 }
