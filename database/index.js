@@ -42,7 +42,7 @@ exports.deleteData = function(item, res, db, collection, callback){
 }
 
 exports.updateData = function(update, item, res, db, collection, callback){
-  var updateDoc = req.body;
+  var updateDoc = update;
   delete updateDoc._id;
   db.collection(collection).updateOne(item, update, function(err, doc) {
     if (err) {
