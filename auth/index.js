@@ -54,7 +54,6 @@ exports.handleAuthorization = function (req, res, next, docs) {
   if (!token) {
     res.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
     status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
-    // res.status(401).json({ 'error': 'Você precisa se autenticar' });
 
   } else if (docs.length > 1){
     return status.handleError(res, "TOKEN DUPLICADO", configs.messages.authGeneric, 500);
