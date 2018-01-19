@@ -80,4 +80,8 @@ exports.updateUser = function(req,res){
   });
 }
 
+exports.uploadAvatar = function(req,res){
+  console.log(req.file);
+}
+
 module.exports = exports;

@@ -15,6 +15,12 @@ exports.database = {
   uri : process.env.MONGODB_URI || "mongodb://127.0.0.1:27017"
 }
 
+exports.aws = {
+  accessKey : process.env.AWS_ACCESS_KEY_ID,
+  secretKey: process.env.AWS_SECRET_ACCESS_KEY,
+  bucket: process.env.S3_BUCKET_NAME
+}
+
 exports.messages = {
   databaseLogin       : "Não foi possível efetuar o login. Tente mais tarde",
   databaseDelete      : "Não foi possível deletar este registro",
