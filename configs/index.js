@@ -20,6 +20,7 @@ exports.messages = {
   databaseDelete : "Não foi possível deletar este registro",
   databaseGet : "Não foi possível obter este registro",
   databaseUpdate: "Não foi possível atualizar este registro",
+  databaseNoId: "A transação não poder ser completada, registro inexistente",
   databasePost: "Não foi possível cadastrar este registro",
   databasePostEmail: "Email já cadastrado",
   loginPassword: "Senha incorreta",
