@@ -10,6 +10,8 @@ s3.config.update({
   accessKeyId: configs.aws.accessKey
 });
 
+exports.form = multer().single('avatar');
+
 exports.uploadS3 = multer({
   storage: multerS3({
       s3: s3,

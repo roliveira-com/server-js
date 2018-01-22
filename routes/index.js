@@ -6,6 +6,7 @@ var auth = require('../auth');
 var status = require('../status');
 var configs = require('../configs');
 var database = require('../database');
+var upload = require('../upload');
 
 
 var db;
@@ -101,6 +102,17 @@ exports.saveAvatar = function(req,res){
     };
   });
 
+};
+
+exports.theAvatar = function(req,res){
+  database.searchData({_id: new ObjectID(req.body.uid)}, res, db, configs.collections.contacts, function(doc){
+    if(doc.length == 1){
+      upload.uploadAvatar();
+    }
+  })
+  doc[0].avatar = req.file.location;
+  doc[0].owner = req.body.uid;
+  res.status(201).json({"success": doc[0]})
 }
 
 module.exports = exports;
