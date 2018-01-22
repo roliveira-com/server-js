@@ -5,20 +5,23 @@ var configs = require('../configs');
 
 var s3 = new aws.S3();
 
-aws.config.update({
+s3.config.update({
   secretAccessKey: configs.aws.secretKey,
-  accessKeyId: configs.aws.accessKey,
-  region: 'us-east-1'
+  accessKeyId: configs.aws.accessKey
 });
 
-var upload = multer({
+exports.uploadS3 = multer({
   storage: multerS3({
       s3: s3,
       bucket: configs.aws.bucket,
-      key: Date.now().toString()
+      acl: 'public-read',
+      contentDisposition: 'inline',
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      storageClass: 'REDUCED_REDUNDANCY',
+      key: function (req, file, cb) {
+          cb(null, Date.now().toString()+'_'+file.originalname);
+      }
   })
 });
 
-exports.s3Upload = function(formFieldName){
-  upload.array(formFieldName,1)
-}
+exports.uploadAvatar = exports.uploadS3.single('avatar');

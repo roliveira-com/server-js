@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 exports.collections = {
   contacts : "contacts",
   users: "users",
+  avatar: "avatars",
   projects: "projects", 
   token : "tokens" 
 }
@@ -29,6 +32,7 @@ exports.messages = {
   databaseNoId        : "A transação não poder ser completada, registro inexistente",
   databasePost        : "Não foi possível cadastrar este registro",
   databasePostEmail   : "Email já cadastrado",
+  UploadParamsRequired: "É necessário informar ID de usuário e o arquivo para fazer o upload",
   loginPassword       : "Senha incorreta",
   loginEmail          : "Email não encontrado",
   loginGeneric        : "Não foi possível efetuar o login, contate-nos",
