@@ -62,7 +62,6 @@ exports.registerUser = function(req,res){
 
 exports.deleteUser = function(req,res){
   database.deleteData({_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(result){
-    console.log(result.document);
     status.handleResponse(res);
   });
 };
