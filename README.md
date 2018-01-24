@@ -20,10 +20,10 @@ This is a simple REST API server that stores people's data using Express and Mon
 
 
 ## Setup
-Clone this repo 
+Clone this repo  
 `git clone https://github.com/roliveira-com/server-js.git`  
 
-Install dependencies
+Install dependencies  
 `npm install`  
 
 Launch the server locally  
@@ -35,6 +35,7 @@ Available soon!
 ## Roadmap
 - [x] Contacts CRUD
 - [x] Authentication
+- [ ] Password encoding
 - [ ] Better model validation
 - [ ] Image upload with Amazon S3
 - [ ] Implement MVC logic and structure
