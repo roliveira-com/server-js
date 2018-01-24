@@ -35,7 +35,7 @@ Available soon!
 ## Roadmap
 - [x] Contacts CRUD
 - [x] Authentication
-- [ ] Password enconding
+- [ ] Password encoding
 - [ ] Better model validation
 - [ ] Image upload with Amazon S3
 - [ ] Implement MVC logic and structure
