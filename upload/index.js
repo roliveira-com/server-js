@@ -29,11 +29,38 @@ exports.uploadS3 = multer({
 // exports.uploadAvatar = exports.uploadS3.single('avatar');
 
 exports.uploadAvatar = function(req, res){
-  // Então...
-  // Por alguma razão, apesar do request vir com o pararâmeto 'file' até aqui
-  // o método uploadS3.single() não consegue fazer o upload conforme esperado.
-  // Acho válido, tentar uma nova abordagem usando um wrapper diferente para
-  // realizar o upload para o S3.Checar este módulo aqui: https://www.npmjs.com/package/s3
-  exports.uploadS3.single(req.file.fieldname);
-  res.status(201).json({ "success": req.file.fieldname});
+  params = { 
+    Bucket: configs.aws.bucket, 
+    ContentDisposition: 'inline',
+    ContentType: req.file.mimetype,
+    ACL: 'public-read',
+    // Metadata: {
+    //   '<owner>': req.body.uid
+    // },
+    Key: Date.now().toString() + '_' + req.file.originalname, 
+    Body: req.file.buffer
+  };
+
+  success = {
+    filename: req.file.originalname,
+    filetype: req.file.mimetype,
+    filesize: req.file.size,
+    bucket: params.Bucket,
+    key: params.Key,
+    url: exports.makeS3Url(params.Bucket, params.Key)
+  }
+
+  s3.putObject(params, function (err, data) {
+    if(err){
+      res.status(500).json({"error": err})
+    }else{
+      res.status(201).json({ "success" : success } )
+    }
+  })
+}
+
+exports.makeS3Url = function (bucket, key) {
+  var protocol = 'https://';
+  var baseUrl = '.s3.amazonaws.com/'
+  return protocol+bucket+baseUrl+key;
 }

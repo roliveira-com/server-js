@@ -21,7 +21,7 @@ route.connect(function() {
 
   app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 
-  // app.post('/api/upload/avatar', route.provideAuthorization, upload.uploadAvatar, route.saveAvatar);
+  // app.post('/api/upload/avatar/:id', route.provideAuthorization, upload.uploadAvatar, route.saveAvatar);
 
   app.post('/api/upload/avatar', upload.form, route.theAvatar);
 

@@ -83,17 +83,17 @@ exports.updateUser = function(req,res){
 
 exports.saveAvatar = function(req,res){
 
-  if(!req.file || !req.body.uid){
+  if (!req.file || !req.params.id){
     return status.handleError(res,"DADOS INVÁLIDOS",configs.messages.UploadParamsRequired);
   };
 
-  database.searchData({_id: new ObjectID(req.body.uid)}, res, db, configs.collections.contacts, function(docs){
+  database.searchData({_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(docs){
     if(docs.length == 0){
       status.handleError(res,"USUÁRIO NÃO ENCONTRADO", configs.messages.databaseNoId);
 
     } else if(docs.length == 1){
       docs[0].avatar = req.file.location;
-      database.updateData(docs[0], {_id: new ObjectID(req.body.uid)}, res, db, configs.collections.contacts, function(doc){
+      database.updateData(docs[0], { _id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(doc){
         status.handleResponse(res);
       });
 
@@ -105,7 +105,8 @@ exports.saveAvatar = function(req,res){
 };
 
 exports.theAvatar = function(req,res){
-  upload.uploadAvatar(req, res);
+  console.log(req.file);
+  // upload.uploadAvatar(req, res);
   // database.searchData({_id: new ObjectID(req.body.uid)}, res, db, configs.collections.contacts, function(doc){
   //   if(doc.length == 1){
   //     upload.uploadAvatar(req, res, db, doc, configs.collections.contacts);
