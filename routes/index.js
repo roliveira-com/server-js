@@ -8,7 +8,6 @@ var configs = require('../configs');
 var database = require('../database');
 var upload = require('../upload');
 
-
 var db;
 var exports = {}
 
@@ -22,7 +21,7 @@ exports.connect = function(callback) {
 
 exports.login = function(req,res){
   database.searchData({"email":req.body.email}, res, db, configs.collections.contacts, function(docs){
-    auth.loginRegister(req, res, auth.loginHandler(req,res,docs), db);
+    auth.loginRegister(req, res, docs[0]._id, auth.loginHandler(req,res,docs), db);
   });
 };
 
@@ -81,28 +80,34 @@ exports.updateUser = function(req,res){
   });
 }
 
-exports.saveAvatar = function(req,res){
-
-  if (!req.file || !req.params.id){
-    return status.handleError(res,"DADOS INVÁLIDOS",configs.messages.UploadParamsRequired);
-  };
-
-  database.searchData({_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(docs){
-    if(docs.length == 0){
-      status.handleError(res,"USUÁRIO NÃO ENCONTRADO", configs.messages.databaseNoId);
-
-    } else if(docs.length == 1){
-      docs[0].avatar = req.file.location;
-      database.updateData(docs[0], { _id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(doc){
-        status.handleResponse(res);
-      });
-
-    }else{
-      status.handleError(res,"USUÁRIO DUPLICADO", configs.messages.databaseUpdate)
-    };
+exports.saveAvatar = function (req, res) {
+  database.searchData({ _id: new ObjectID(req.params.id) }, res, db, configs.collections.contacts, function (doc) {
+    upload.registerAvatar(req, res, doc, db);
   });
-
 };
+
+// exports.saveAvatar = function(req,res){
+
+//   if (!req.file || !req.params.id){
+//     return status.handleError(res,"DADOS INVÁLIDOS",configs.messages.UploadParamsRequired);
+//   };
+
+//   database.searchData({_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(docs){
+//     if(docs.length == 0){
+//       status.handleError(res,"USUÁRIO NÃO ENCONTRADO", configs.messages.databaseNoId);
+
+//     } else if(docs.length == 1){
+//       docs[0].avatar = req.file.location;
+//       database.updateData(docs[0], { _id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(doc){
+//         status.handleResponse(res);
+//       });
+
+//     }else{
+//       status.handleError(res,"USUÁRIO DUPLICADO", configs.messages.databaseUpdate)
+//     };
+//   });
+
+// };
 
 exports.theAvatar = function(req,res){
   console.log(req.file);

@@ -21,11 +21,9 @@ route.connect(function() {
 
   app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 
-  // app.post('/api/upload/avatar/:id', route.provideAuthorization, upload.uploadAvatar, route.saveAvatar);
-
-  app.post('/api/upload/avatar', upload.form, route.theAvatar);
-
   app.delete('/api/contacts/:id', route.deleteUser);
+
+  app.post('/api/upload/avatar/:id', route.provideAuthorization, upload.formAvatar, route.saveAvatar);
 
   var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
