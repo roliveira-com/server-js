@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 exports.collections = {
   contacts : "contacts",
   users: "users",
+  avatar: "avatars",
   projects: "projects", 
   token : "tokens" 
 }
@@ -15,6 +18,12 @@ exports.database = {
   uri : process.env.MONGODB_URI || "mongodb://127.0.0.1:27017"
 }
 
+exports.aws = {
+  accessKey : process.env.AWS_ACCESS_KEY_ID,
+  secretKey: process.env.AWS_SECRET_ACCESS_KEY,
+  bucket: process.env.S3_BUCKET_NAME
+}
+
 exports.messages = {
   databaseLogin       : "Não foi possível efetuar o login. Tente mais tarde",
   databaseDelete      : "Não foi possível deletar este registro",
@@ -23,6 +32,8 @@ exports.messages = {
   databaseNoId        : "A transação não poder ser completada, registro inexistente",
   databasePost        : "Não foi possível cadastrar este registro",
   databasePostEmail   : "Email já cadastrado",
+  uploadParamsRequired: "É necessário anexar a imagem do avatar",
+  uploadWrongFiletype : "O arquivo de avatar precisa ser uma imagem",
   loginPassword       : "Senha incorreta",
   loginEmail          : "Email não encontrado",
   loginGeneric        : "Não foi possível efetuar o login, contate-nos",
