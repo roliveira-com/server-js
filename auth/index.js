@@ -20,6 +20,7 @@ exports.loginHandler = function(req,res,docs){
       var response ={
         nome: docs[0].nome,
         email: docs[0].email,
+        uid: docs[0]._id,
         token: jwt.sign({ sub: docs[0].email, iss: configs.token.issuer }, configs.token.passcode )
       };
       status.handleResponse(res,response,201)
@@ -32,11 +33,12 @@ exports.loginHandler = function(req,res,docs){
   }
 }
 
-exports.loginRegister = function(req, res, token, db){
+exports.loginRegister = function(req, res, uid, token, db){
   if(token){
     var date = new Date();
     db.collection(configs.collections.token).insertOne({
       email: req.body.email,
+      uid: uid,
       token: token,
       created: tokenHandler.created(),
       expire: tokenHandler.expire()
