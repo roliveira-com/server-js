@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var route = require('./routes')
 var auth = require('./auth')
 var upload = require('./upload');
+var cors = require('cors');
 
 var app = express();
 app.use(bodyParser.json());
@@ -15,7 +16,7 @@ route.connect(function() {
 
   app.get('/api/contacts', route.getContacts);
 
-  app.get('/api/projects', route.getProjects);
+  app.get('/api/projects', cors(), route.getProjects);
 
   app.get('/api/contacts/:id', route.getContactById);
 
