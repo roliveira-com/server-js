@@ -39,6 +39,12 @@ exports.getContacts = function(req,res){
   })
 }
 
+exports.getProjects = function (req, res) {
+  database.getData(res, db, configs.collections.projects, function (docs) {
+    status.handleResponse(res, docs);
+  })
+}
+
 
 exports.getTokens = function(req,res){
   database.getData(res, db, configs.collections.token, function(docs){
@@ -56,6 +62,12 @@ exports.registerUser = function(req,res){
     }else{
       status.handleError(res, "EMAIL JÁ CADASTRADO", configs.messages.databasePostEmail);
     };
+  });
+};
+
+exports.registerProject = function (req, res) {
+  database.insertData(req.body, res, db, configs.collections.projects, function (doc) {
+    status.handleResponse(res, doc.ops[0]);
   });
 };
 

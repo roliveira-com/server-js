@@ -15,11 +15,15 @@ route.connect(function() {
 
   app.get('/api/contacts', route.getContacts);
 
+  app.get('/api/projects', route.getProjects);
+
   app.get('/api/contacts/:id', route.getContactById);
 
   app.put('/api/contacts/:id', route.provideAuthorization, route.updateUser)
 
   app.post('/api/contacts', route.provideAuthorization, route.registerUser);
+
+  app.post('/api/projects', route.registerProject);
 
   app.delete('/api/contacts/:id', route.deleteUser);
 
