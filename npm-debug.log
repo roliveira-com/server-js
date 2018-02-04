@@ -7,7 +7,7 @@
 6 silly lifecycle contacts-database@0.0.0~prestart: no script for prestart, continuing
 7 info lifecycle contacts-database@0.0.0~start: contacts-database@0.0.0
 8 verbose lifecycle contacts-database@0.0.0~start: unsafe-perm in lifecycle true
-9 verbose lifecycle contacts-database@0.0.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/rodrigooliveira/server-js/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/rodrigooliveira/SDKs/android-sdk-macosx/tools:/Users/rodrigooliveira/SDKs/android-sdk-macosx/platform-tools:/Users/rodrigooliveira/.rvm/bin:/Users/rodrigooliveira/SDKs/android-sdk-macosx/tools:/Users/rodrigooliveira/SDKs/android-sdk-macosx/platform-tools
+9 verbose lifecycle contacts-database@0.0.0~start: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/rodrigooliveira/server-js/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/rodrigooliveira/SDKs/android-sdk-macosx/tools:/Users/rodrigooliveira/SDKs/android-sdk-macosx/platform-tools:/Users/rodrigooliveira/.rvm/bin
 10 verbose lifecycle contacts-database@0.0.0~start: CWD: /Users/rodrigooliveira/server-js
 11 silly lifecycle contacts-database@0.0.0~start: Args: [ '-c', 'node server.js' ]
 12 silly lifecycle contacts-database@0.0.0~start: Returned: code: 1  signal: null

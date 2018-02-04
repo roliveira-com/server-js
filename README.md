@@ -36,11 +36,15 @@ Available soon!
 - [ ] Password encoding
 - [ ] Better model validation
 - [x] Image upload with Amazon S3
+- [ ] Password recover by email
 - [ ] Implement MVC logic and structure
 
 ## Issues
 
 - When updating an user, you must pass all the user data, otherwise that one you dont pass will be erased form DB 
+- When updating an user, the update is performed even when an email that already exists at db is specified
+- When updating an user, a server error happens when the user ID is not valid or non existing at database
+- Handle the error the ID passed for delete, uodate and other ID related active is not an 24 hex string
 
 ## Useful Articles
 - [Limitless file uploading to Amazon S3 with Node & Express](https://www.terlici.com/2015/05/23/uploading-files-S3.html)

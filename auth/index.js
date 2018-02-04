@@ -6,10 +6,6 @@ exports.loginHandler = function(req,res,docs){
 
   if ( !req.body.email || !req.body.senha ) {
     return status.handleError(res, "DADOS INVÁLIDOS", configs.messages.loginParamsRequired);
-  }
-
-  if (docs.length == 0) {
-    status.handleError(res,"EMAIL NÃO ENCONTRADO", configs.messages.loginEmail, 401);
   
   } else if (docs.length != 1) {
     status.handleError(res,"EMAIL DUPLICADO NA BASE", configs.messages.loginGeneric, 401);
@@ -17,7 +13,7 @@ exports.loginHandler = function(req,res,docs){
   } else if (docs.length == 1) {
 
     if (req.body.senha == docs[0].senha) {
-      var response ={
+      var response = {
         nome: docs[0].nome,
         email: docs[0].email,
         uid: docs[0]._id,
