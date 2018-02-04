@@ -21,7 +21,11 @@ exports.connect = function(callback) {
 
 exports.login = function(req,res){
   database.searchData({"email":req.body.email}, res, db, configs.collections.contacts, function(docs){
-    auth.loginRegister(req, res, docs[0]._id, auth.loginHandler(req,res,docs), db);
+    if (docs.length == 0) {
+      status.handleError(res, "EMAIL NÃO ENCONTRADO", configs.messages.loginEmail, 401);
+    } else{
+      auth.loginRegister(req, res, docs[0]._id, auth.loginHandler(req, res, docs), db);
+    }
   });
 };
 

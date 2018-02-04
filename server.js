@@ -21,7 +21,7 @@ route.connect(function() {
 
   app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 
-  app.delete('/api/contacts/:id', route.deleteUser);
+  app.delete('/api/contacts/:id', route.provideAuthorization, route.deleteUser);
 
   app.post('/api/upload/avatar/:id', route.provideAuthorization, upload.formAvatar, route.saveAvatar);
 
