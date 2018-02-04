@@ -38,6 +38,10 @@ Available soon!
 - [x] Image upload with Amazon S3
 - [ ] Implement MVC logic and structure
 
+## Issues
+
+- When updating an user, you must pass all the user data, otherwise that one you dont pass will be erased form DB 
+
 ## Useful Articles
 - [Limitless file uploading to Amazon S3 with Node & Express](https://www.terlici.com/2015/05/23/uploading-files-S3.html)
 - [Uploading files locally with Node & Express](https://www.terlici.com/2015/05/16/uploading-files-locally.html)

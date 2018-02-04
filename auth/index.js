@@ -61,13 +61,13 @@ exports.handleAuthorization = function (req, res, next, docs) {
     return status.handleError(res, "TOKEN DUPLICADO", configs.messages.authGeneric, 500);
 
   } else if ( docs[0] == undefined || docs[0] == null){
-    return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
+    return status.handleError(res, "FORBBIDEN", configs.messages.tokenInvalid, 403);
 
   } else if (token == docs[0].token && docs[0].expire >= now.getTime() ){
     next();
 
   } else {
-    return status.handleError(res, "FORBBIDEN", configs.messages.tokenInvalid, 403);
+    return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
   }
 }
 
