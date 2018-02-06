@@ -8,6 +8,8 @@ var configs = require('../configs');
 var database = require('../database');
 var upload = require('../upload');
 
+var user = require('../model');
+
 var db;
 var exports = {}
 

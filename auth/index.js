@@ -1,6 +1,7 @@
 var jwt = require("jsonwebtoken");
 var status = require('../status');
 var configs = require('../configs');
+var hash = require('../model').hash;
 
 exports.loginHandler = function(req,res,docs){
 
@@ -12,15 +13,14 @@ exports.loginHandler = function(req,res,docs){
   
   } else if (docs.length == 1) {
 
-    if (req.body.senha == docs[0].senha) {
+    if (hash(req.body.senha) == docs[0].senha) {
       var response = {
         nome: docs[0].nome,
         email: docs[0].email,
         uid: docs[0]._id,
         token: jwt.sign({ sub: docs[0].email, iss: configs.token.issuer }, configs.token.passcode )
       };
-      status.handleResponse(res,response,201)
-      return response.token;
+      return response;
 
     } else {
       status.handleError(res, "SENHA INCORRETA", configs.messages.loginPassword, 403);
@@ -29,19 +29,19 @@ exports.loginHandler = function(req,res,docs){
   }
 }
 
-exports.loginRegister = function(req, res, uid, token, db){
-  if(token){
+exports.loginRegister = function(req, res, uid, objToken, db){
+  if(objToken.token){
     var date = new Date();
     db.collection(configs.collections.token).insertOne({
       email: req.body.email,
       uid: uid,
-      token: token,
+      token: objToken.token,
       created: tokenHandler.created(),
       expire: tokenHandler.expire()
     }, function(err, doc) {
-      if (err) {
-        throw err;
-      }
+      if (err) throw err
+      objToken._id = doc.insertedId;
+      status.handleResponse(res, objToken, 201)
     })
   }
 }
