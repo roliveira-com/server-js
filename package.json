@@ -8,15 +8,22 @@
   "private": true,
   "dependencies": {
     "async": "^2.6.0",
+    "aws-sdk": "^2.184.0",
     "body-parser": "^1.17.1",
     "core-js": "^2.4.1",
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
     "dotenv": "^4.0.0",
 >>>>>>> Stashed changes
+=======
+    "crypto": "^1.0.1",
+    "dotenv": "^4.0.0",
+>>>>>>> d4bfaa637f139f0389ba405b8b918f6d3e8becc8
     "express": "^4.15.2",
     "jsonwebtoken": "^8.1.0",
-    "mongodb": "^2.2.26"
+    "mongodb": "^2.2.26",
+    "multer": "^1.3.0"
   },
   "devDependencies": {
     "ts-node": "~2.0.0",

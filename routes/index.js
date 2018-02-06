@@ -6,7 +6,9 @@ var auth = require('../auth');
 var status = require('../status');
 var configs = require('../configs');
 var database = require('../database');
+var upload = require('../upload');
 
+var user = require('../model');
 
 var db;
 var exports = {}
@@ -21,7 +23,11 @@ exports.connect = function(callback) {
 
 exports.login = function(req,res){
   database.searchData({"email":req.body.email}, res, db, configs.collections.contacts, function(docs){
-    auth.loginRegister(req, res, auth.loginHandler(req,res,docs), db);
+    if (docs.length == 0) {
+      status.handleError(res, "EMAIL NÃO ENCONTRADO", configs.messages.loginEmail, 401);
+    } else{
+      auth.loginRegister(req, res, docs[0]._id, auth.loginHandler(req, res, docs), db);
+    }
   });
 };
 
@@ -78,6 +84,48 @@ exports.updateUser = function(req,res){
   database.updateData(req.body, {_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(doc){
     status.handleResponse(res);
   });
+}
+
+exports.saveAvatar = function (req, res) {
+  database.searchData({ _id: new ObjectID(req.params.id) }, res, db, configs.collections.contacts, function (doc) {
+    upload.registerAvatar(req, res, doc, db);
+  });
+};
+
+// exports.saveAvatar = function(req,res){
+
+//   if (!req.file || !req.params.id){
+//     return status.handleError(res,"DADOS INVÁLIDOS",configs.messages.UploadParamsRequired);
+//   };
+
+//   database.searchData({_id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(docs){
+//     if(docs.length == 0){
+//       status.handleError(res,"USUÁRIO NÃO ENCONTRADO", configs.messages.databaseNoId);
+
+//     } else if(docs.length == 1){
+//       docs[0].avatar = req.file.location;
+//       database.updateData(docs[0], { _id: new ObjectID(req.params.id)}, res, db, configs.collections.contacts, function(doc){
+//         status.handleResponse(res);
+//       });
+
+//     }else{
+//       status.handleError(res,"USUÁRIO DUPLICADO", configs.messages.databaseUpdate)
+//     };
+//   });
+
+// };
+
+exports.theAvatar = function(req,res){
+  console.log(req.file);
+  // upload.uploadAvatar(req, res);
+  // database.searchData({_id: new ObjectID(req.body.uid)}, res, db, configs.collections.contacts, function(doc){
+  //   if(doc.length == 1){
+  //     upload.uploadAvatar(req, res, db, doc, configs.collections.contacts);
+  //   }
+  // })
+  // doc[0].avatar = req.file.location;
+  // doc[0].owner = req.body.uid;
+  // res.status(201).json({"success": doc[0]})
 }
 
 module.exports = exports;
