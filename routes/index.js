@@ -8,6 +8,9 @@ var configs = require('../configs');
 var database = require('../database');
 var upload = require('../upload');
 
+var user = require('../model');
+
+
 var db;
 var exports = {}
 
@@ -50,16 +53,35 @@ exports.getTokens = function(req,res){
   });
 };
 
+exports.getProjects = function (req, res) {
+  database.getData(res, db, configs.collections.projects, function (docs) {
+    status.handleResponse(res, docs, 201);
+  });
+};
 
 exports.registerUser = function(req,res){
-  database.searchData({email:req.body.email}, res, db, configs.collections.contacts, function(docs){
-    if(docs.length == 0){
-      database.insertData(req.body, res, db, configs.collections.contacts, function(doc){
+  var usuario = new user.User(req.body.nome, req.body.sobrenome, req.body.email, req.body.senha)
+  if(usuario.invalid_model){
+    return status.handleError(res, "DADOS INVALIDOS", configs.messages.registerParamsRequired, 400);
+  }
+  database.searchData({ email: usuario.email }, res, db, configs.collections.contacts, function (docs) {
+    if (docs.length == 0) {
+      database.insertData(usuario, res, db, configs.collections.contacts, function (doc) {
         status.handleResponse(res, doc.ops[0]);
       });
-    }else{
+    } else {
       status.handleError(res, "EMAIL JÁ CADASTRADO", configs.messages.databasePostEmail);
     };
+  });
+};
+
+exports.AddProject = function (req, res) {
+  var project = new user.Project(req.body.title, req.body.description, req.body.status)
+  if (project.invalid_model) {
+    return status.handleError(res, "DADOS INVALIDOS", configs.messages.registerParamsRequired, 400);
+  }
+  database.insertData(project, res, db, configs.collections.projects, function (doc) {
+    status.handleResponse(res, doc.ops[0]);
   });
 };
 

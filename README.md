@@ -6,7 +6,7 @@ This is a simple REST API server that stores people's data using Express and Mon
 
 ## Functionalities
 - GET, POST, PUT and DELETE methods for contacts under the endpoint;
-- Contacts image avatar upload using Amazon S3 (under implementation)
+- Contacts image avatar upload using Amazon S3
 - Authentication with JWT;
 
 ## Endpoints
@@ -33,8 +33,8 @@ Available soon!
 ## Roadmap
 - [x] Contacts CRUD
 - [x] Authentication
-- [ ] Password encoding
-- [ ] Better model validation
+- [x] Password encoding
+- [x] Better model validation
 - [x] Image upload with Amazon S3
 - [ ] Password recover by email
 - [ ] Implement MVC logic and structure
@@ -44,7 +44,7 @@ Available soon!
 - When updating an user, you must pass all the user data, otherwise that one you dont pass will be erased form DB 
 - When updating an user, the update is performed even when an email that already exists at db is specified
 - When updating an user, a server error happens when the user ID is not valid or non existing at database
-- Handle the error the ID passed for delete, uodate and other ID related active is not an 24 hex string
+- Handle the error the ID passed for delete, update and other ID related active is not an 24 hex string
 
 ## Useful Articles
 - [Limitless file uploading to Amazon S3 with Node & Express](https://www.terlici.com/2015/05/23/uploading-files-S3.html)
