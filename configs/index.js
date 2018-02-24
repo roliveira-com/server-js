@@ -32,6 +32,7 @@ exports.messages = {
   databaseNoId          : "A transação não poder ser completada, registro inexistente",
   databasePost          : "Não foi possível cadastrar este registro",
   databasePostEmail     : "Email já cadastrado",
+  registerParamsRequired: "Faltam parametros na sua solicitação",
   uploadParamsRequired  : "É necessário anexar a imagem do avatar",
   uploadWrongFiletype   : "O arquivo de avatar precisa ser uma imagem",
   loginPassword         : "Senha incorreta",

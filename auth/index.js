@@ -23,14 +23,16 @@ exports.loginHandler = function(req,res,docs){
       return response;
 
     } else {
-      status.handleError(res, "SENHA INCORRETA", configs.messages.loginPassword, 403);
+      return status.handleError(res, "SENHA INCORRETA", configs.messages.loginPassword, 403);
 
     }
   }
 }
 
 exports.loginRegister = function(req, res, uid, objToken, db){
-  if(objToken.token){
+  if (objToken == undefined){
+    return false;
+  } else {
     var date = new Date();
     db.collection(configs.collections.token).insertOne({
       email: req.body.email,
@@ -38,7 +40,7 @@ exports.loginRegister = function(req, res, uid, objToken, db){
       token: objToken.token,
       created: tokenHandler.created(),
       expire: tokenHandler.expire()
-    }, function(err, doc) {
+    }, function (err, doc) {
       if (err) throw err
       objToken._id = doc.insertedId;
       status.handleResponse(res, objToken, 201)

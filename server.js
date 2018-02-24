@@ -2,14 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var route = require('./routes')
 var auth = require('./auth')
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 var upload = require('./upload');
->>>>>>> Stashed changes
-=======
-var upload = require('./upload');
->>>>>>> d4bfaa637f139f0389ba405b8b918f6d3e8becc8
 
 var app = express();
 app.use(bodyParser.json());
@@ -29,14 +22,13 @@ route.connect(function() {
 
   app.get('/api/contacts', route.getContacts);
 
-<<<<<<< Updated upstream
-=======
   app.get('/api/projects', route.getProjects);
 
->>>>>>> Stashed changes
   app.get('/api/contacts/:id', route.getContactById);
 
   app.put('/api/contacts/:id', route.provideAuthorization, route.updateUser)
+
+  app.post('/api/projects', route.AddProject);
 
   app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 
