@@ -30,7 +30,7 @@ route.connect(function() {
 
   app.post('/api/projects', route.AddProject);
 
-  app.post('/api/contacts', route.provideAuthorization, route.registerUser);
+  app.post('/api/contacts', route.registerUser);
 
   app.delete('/api/contacts/:id', route.provideAuthorization, route.deleteUser);
 
