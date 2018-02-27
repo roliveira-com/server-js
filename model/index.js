@@ -36,6 +36,8 @@ exports.validateModel = function (model) {
 }
 
 exports.hash = function (password) {
-  return crypto.createHash('sha1').update(password).digest('base64')
+  if(password){
+    return crypto.createHash('sha1').update(password).digest('base64')
+  }
 }
 
