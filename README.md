@@ -37,6 +37,7 @@ Available soon!
 - [x] Better model validation
 - [x] Image upload with Amazon S3
 - [ ] Password recover by email
+- [ ] Implement Socket
 - [ ] Implement MVC logic and structure
 
 ## Issues
@@ -47,6 +48,10 @@ Available soon!
 - Handle the error the ID passed for delete, update and other ID related active is not an 24 hex string
 
 ## Useful Articles
+- [Use Socket.io for Real Time Client/Server Communication](https://www.youtube.com/watch?v=ndRMTdZRA4I)
+- [Create Real time Chat Application Using Angular, Node.JS and Socket.IO](https://www.youtube.com/watch?v=vpQDkEgO-kA)
+- [Real Time Apps with TypeScript: Integrating Web Sockets, Node & Angula](https://medium.com/dailyjs/real-time-apps-with-typescript-integrating-web-sockets-node-angular-e2b57cbd1ec1)
+- [Build a real time app with MEAN2, angular-cli and socket.io](https://hackernoon.com/build-real-time-app-with-mean2-angular-cli-and-socket-io-cedf1dc02fec)
 - [Limitless file uploading to Amazon S3 with Node & Express](https://www.terlici.com/2015/05/23/uploading-files-S3.html)
 - [Uploading files locally with Node & Express](https://www.terlici.com/2015/05/16/uploading-files-locally.html)
 - [Best practices for Express app structure](https://www.terlici.com/2014/08/25/best-practices-express-structure.html)
