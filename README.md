@@ -34,19 +34,22 @@ Available soon!
 - [x] Contacts CRUD
 - [x] Authentication
 - [x] Password encoding
-- [x] Better model validation
 - [x] Image upload with Amazon S3
 - [ ] Password recover by email
-- [ ] Implement MVC logic and structure
+- [ ] Improve overrall logic andstructure
+- [ ] Better model validation with Mongoose
+- [ ] Implement socket IO
 
 ## Issues
 
-- When updating an user, you must pass all the user data, otherwise that one you dont pass will be erased form DB 
+- When updating an user, you must pass all the user data, otherwise that paramenters you haven't passed will be erased from DB 
 - When updating an user, the update is performed even when an email that already exists at db is specified
-- When updating an user, a server error happens when the user ID is not valid or non existing at database
+- When updating an user, a non handled error appears when the user ID is not valid or non existing at database
 - Handle the error the ID passed for delete, update and other ID related active is not an 24 hex string
 
 ## Useful Articles
+- [Sending Email Using Node.js](https://www.sitepoint.com/sending-email-using-node-js/)
+- [Sending HTML Email in Nodejs/Express](https://www.codementor.io/joshuaaroke/sending-html-message-in-nodejs-express-9i3d3uhjr)
 - [Limitless file uploading to Amazon S3 with Node & Express](https://www.terlici.com/2015/05/23/uploading-files-S3.html)
 - [Uploading files locally with Node & Express](https://www.terlici.com/2015/05/16/uploading-files-locally.html)
 - [Best practices for Express app structure](https://www.terlici.com/2014/08/25/best-practices-express-structure.html)
