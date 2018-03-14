@@ -1,14 +1,14 @@
 var express     = require("express");
-var http      = require("http");
+var http        = require("http");
 var socket      = require("socket.io");
 var bodyParser  = require("body-parser");
 var route       = require('./routes')
 var auth        = require('./auth')
 var upload      = require('./upload');
 
-var app     = express();
-var server  = http.createServer(app);
-var io      = socket.listen(server);
+var app         = express();
+var server      = http.createServer(app);
+var io          = socket.listen(server);
 
 
 app.use(bodyParser.json());
