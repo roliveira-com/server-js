@@ -9,9 +9,9 @@ exports.collections = {
 }
 
 exports.token = {
-  issuer: "roliveira-api",
-  passcode: "sds9d8d7s7s9ad7s7a7d67ds8a7d" || process.env.JWT_PASSCODE,
-  expire: 3600000 //300000/5mins - 3600000/1hr - 86400000/1d...;
+  issuer   : "roliveira-api",
+  passcode : "sds9d8d7s7s9ad7s7a7d67ds8a7d" || process.env.JWT_PASSCODE,
+  expire   : 3600000 //300000/5mins - 3600000/1hr - 86400000/1d...;
 }
 
 exports.database = {
@@ -20,8 +20,8 @@ exports.database = {
 
 exports.aws = {
   accessKey : process.env.AWS_ACCESS_KEY_ID,
-  secretKey: process.env.AWS_SECRET_ACCESS_KEY,
-  bucket: process.env.S3_BUCKET_NAME
+  secretKey : process.env.AWS_SECRET_ACCESS_KEY,
+  bucket    : process.env.S3_BUCKET_NAME
 }
 
 exports.messages = {
