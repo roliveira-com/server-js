@@ -31,6 +31,16 @@ exports.insertData = function(data, res, db, collection, callback){
   });
 }
 
+exports.insertSocketData = function(data, db, collection, callback){
+  db.collection(collection).insertOne(data, function(err, doc) {
+    if(err){
+      callback(err);
+    }else{
+      callback(doc);
+    }
+  });
+}
+
 exports.deleteData = function(item, res, db, collection, callback){
   db.collection(collection).deleteOne(item, function(err, result) {
     if (err) {

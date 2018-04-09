@@ -1,5 +1,6 @@
 var express     = require("express");
 var http        = require("http");
+var path        = require("path");
 var socket      = require("socket.io");
 var bodyParser  = require("body-parser");
 var route       = require('./routes')
@@ -10,6 +11,9 @@ var app         = express();
 var server      = http.createServer(app);
 var io          = socket.listen(server);
 
+// configurando conexão do socket específicamente para esta rota
+var projectSocket = io.of('/api/projects');
+
 
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
@@ -19,21 +23,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-io.on('connection', function(socket) {
-
-  console.log('Socket connected');
-
-  socket.on('newproject', function(project) {
-    io.emit('newproject', project);
-  });
-
-  socket.on('projectupdated', function(projectedited) {
-    io.emit('projectupdated', projectedited);
-  });
-
-});
-
-route.connect(function() {
+route.connect(io, function() {
 
   app.get('/api/tokens', route.getTokens);
 
@@ -59,6 +49,27 @@ route.connect(function() {
     var port = server.address().port;
     console.log("Servidor disponível na porta: ", port);
   });
+
+  projectSocket.on('connection', function(socket) {
+
+    socket.join('projects');
+
+    console.log('usuário ' + socket.id + ' conectado.');
+
+    socket.on('newproject', function(data) {
+      route.AddSocketProject(data, function(resp){
+        projectSocket.to('projects').emit('projectadded', resp.ops[0]);
+        // Com o parâmetro 'broadcast', o evento é transmitido para todos conectados mesno esta
+        // projectSocket.broadcast.to(data.room).emit('projectadded', resp.ops[0]);
+      })
+    });
+
+    socket.on('disconnect', function(){
+      console.log('usuário ' + socket.id + ' desconectado.');
+    });
+  
+  });
 });
+
 
 

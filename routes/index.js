@@ -14,7 +14,7 @@ var user = require('../model');
 var db;
 var exports = {}
 
-exports.connect = function(callback) {
+exports.connect = function(io, callback) {
   MongoClient.connect( configs.database.uri, function(err, database) {
     if( err ) throw err;
     db = database;
@@ -82,6 +82,12 @@ exports.AddProject = function (req, res) {
   }
   database.insertData(project, res, db, configs.collections.projects, function (doc) {
     status.handleResponse(res, doc.ops[0]);
+  });
+};
+
+exports.AddSocketProject = function (prj, callback) {
+  database.insertSocketData(prj, db, configs.collections.projects, function (doc) {
+    callback(doc)
   });
 };
 
