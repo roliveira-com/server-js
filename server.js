@@ -1,19 +1,19 @@
 var express     = require("express");
 var http        = require("http");
 var path        = require("path");
-var socket      = require("socket.io");
+// var socket      = require("socket.io");
 var bodyParser  = require("body-parser");
 var route       = require('./routes')
 var auth        = require('./auth')
 var upload      = require('./upload');
+var io          = require('./socket')
 
 var app         = express();
-var server      = http.createServer(app);
-var io          = socket.listen(server);
+// var server      = http.createServer(app);
+// var io          = socket.listen(server);
 
 // configurando conexão do socket específicamente para esta rota
-var projectSocket = io.of('/api/projects');
-
+// var projectSocket = io.of('/api/projects');
 
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
@@ -45,30 +45,32 @@ route.connect(io, function() {
 
   app.post('/api/upload/avatar/:id', route.provideAuthorization, upload.formAvatar, route.saveAvatar);
 
-  server.listen(process.env.PORT || 8080, function () {
-    var port = server.address().port;
-    console.log("Servidor disponível na porta: ", port);
+  var server = app.listen(process.env.PORT || 8080, function () {
+    // var port = app.address().port;
+    console.log("Servidor disponível");
   });
 
-  projectSocket.on('connection', function(socket) {
+  io.init(server,'/api/projects');
 
-    socket.join('projects');
+  // projectSocket.on('connection', function(socket) {
 
-    console.log('usuário ' + socket.id + ' conectado.');
+  //   socket.join('projects');
 
-    socket.on('newproject', function(data) {
-      route.AddSocketProject(data, function(resp){
-        projectSocket.to('projects').emit('projectadded', resp.ops[0]);
-        // Com o parâmetro 'broadcast', o evento é transmitido para todos conectados mesno esta
-        // projectSocket.broadcast.to(data.room).emit('projectadded', resp.ops[0]);
-      })
-    });
+  //   console.log('usuário ' + socket.id + ' conectado.');
 
-    socket.on('disconnect', function(){
-      console.log('usuário ' + socket.id + ' desconectado.');
-    });
+  //   socket.on('newproject', function(data) {
+  //     route.AddSocketProject(data, function(resp){
+  //       projectSocket.to('projects').emit('projectadded', resp.ops[0]);
+  //       // Com o parâmetro 'broadcast', o evento é transmitido para todos conectados mesno esta
+  //       // projectSocket.broadcast.to(data.room).emit('projectadded', resp.ops[0]);
+  //     })
+  //   });
+
+  //   socket.on('disconnect', function(){
+  //     console.log('usuário ' + socket.id + ' desconectado.');
+  //   });
   
-  });
+  // });
 });
 
 
