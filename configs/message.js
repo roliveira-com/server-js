@@ -1,0 +1,20 @@
+module.exports = {
+    databaseLogin           : "Não foi possível efetuar o login. Tente mais tarde",
+    databaseDelete          : "Não foi possível deletar este registro",
+    databaseGet             : "Não foi possível obter este registro",
+    databaseUpdate          : "Não foi possível atualizar este registro",
+    databaseNoId            : "A transação não poder ser completada, registro inexistente",
+    databasePost            : "Não foi possível cadastrar este registro",
+    databasePostEmail       : "Email já cadastrado",
+    registerParamsRequired  : "Faltam parametros na sua solicitação",
+    uploadParamsRequired    : "É necessário anexar a imagem do avatar",
+    uploadWrongFiletype     : "O arquivo de avatar precisa ser uma imagem",
+    loginPassword           : "Senha incorreta",
+    loginEmail              : "Email não encontrado",
+    loginGeneric            : "Não foi possível efetuar o login, contate-nos",
+    loginParamsRequired     : "É necessário informar e-mail e senha para fazer o login",
+    authRequired            : "Você precisa se autenticar",
+    authGeneric             : "Seu login não foi possível. Contate-nos",
+    tokenExpired            : "Token Expirado. Faça um novo login",
+    tokenInvalid            : "Token inválido ou expirado"
+}
