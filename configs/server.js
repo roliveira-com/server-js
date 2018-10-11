@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var routeUsers = require('../api/routes/user');
+var routePicture = require('../api/routes/picture');
 
 var app = express();
 app.use(bodyParser.json());
@@ -16,5 +17,6 @@ app.use(function(req, res, next) {
 });
 
 app.use('/users', routeUsers);
+app.use('/picture', routePicture);
 
 module.exports = app;
