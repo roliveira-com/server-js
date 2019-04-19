@@ -18,6 +18,8 @@ route.connect(function() {
 
   app.get('/api/tokens', route.getTokens);
 
+  app.get('/api/tokens/refresh', route.tokenRefresh);
+
   app.post('/api/login', route.login);
 
   app.get('/api/contacts', route.getContacts);
@@ -30,7 +32,7 @@ route.connect(function() {
 
   app.post('/api/projects', route.AddProject);
 
-  app.post('/api/contacts', route.registerUser);
+  app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 
   app.delete('/api/contacts/:id', route.provideAuthorization, route.deleteUser);
 

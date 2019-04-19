@@ -14,13 +14,7 @@ exports.loginHandler = function(req,res,docs){
   } else if (docs.length == 1) {
 
     if (hash(req.body.senha) == docs[0].senha) {
-      var response = {
-        nome: docs[0].nome,
-        email: docs[0].email,
-        uid: docs[0]._id,
-        token: jwt.sign({ sub: docs[0].email, iss: configs.token.issuer }, configs.token.passcode )
-      };
-      return response;
+      return exports.authCredentials(false, docs);
 
     } else {
       return status.handleError(res, "SENHA INCORRETA", configs.messages.loginPassword, 403);
@@ -29,43 +23,55 @@ exports.loginHandler = function(req,res,docs){
   }
 }
 
-exports.loginRegister = function(req, res, uid, objToken, db){
-  if (objToken == undefined){
-    return false;
-  } else {
-    var date = new Date();
-    db.collection(configs.collections.token).insertOne({
-      email: req.body.email,
-      uid: uid,
-      token: objToken.token,
-      created: tokenHandler.created(),
-      expire: tokenHandler.expire()
-    }, function (err, doc) {
-      if (err) throw err
-      objToken._id = doc.insertedId;
-      status.handleResponse(res, objToken, 201)
-    })
+exports.authCredentials = function(decoded = undefined, docs = undefined){
+  return {
+    user: {
+      email: decoded ? decoded.sub : docs[0].email,
+      name: decoded ? decoded.data.nome : docs[0].nome,
+      surname: decoded ? decoded.data.sobrenome : docs[0].sobrenome
+    },
+    token: jwt.sign({
+      data: { ...docs[0], ...decoded },
+      sub: decoded ? decoded.sub : docs[0].email,
+      iss: configs.token.issuer,
+      exp: Math.floor(Date.now() / 1000) + (60 * 1)
+    }, configs.token.passcode),
+    refreshToken: jwt.sign({
+      data: { ...docs[0], ...decoded },
+      sub: decoded ? decoded.sub : docs[0].email,
+      iss: configs.token.issuer,
+      exp: Math.floor(Date.now() / 1000) + (60 * 2)
+    }, configs.token.passcode),
   }
 }
 
-exports.handleAuthorization = function (req, res, next, docs) {
-  let token = exports.extractToken(req);
-  let now = new Date();
-  if (!token) {
+exports.tokenRefresh = function(req,res){
+  if (!req.headers && req.headers.authorization) {
+    res.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
+    return status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
+  } else {
+    const token = exports.extractToken(req);
+    jwt.verify(token, configs.token.passcode, function (err, decoded) {
+      if (err) {
+        return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
+      }
+      status.handleResponse(res, exports.authCredentials(decoded, false), 200);
+    });
+  }
+}
+
+exports.handleAuthorization = function (req, res, next) {
+  const token = exports.extractToken(req);
+  if(!token){
     res.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
     status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
-
-  } else if (docs.length > 1){
-    return status.handleError(res, "TOKEN DUPLICADO", configs.messages.authGeneric, 500);
-
-  } else if ( docs[0] == undefined || docs[0] == null){
-    return status.handleError(res, "FORBBIDEN", configs.messages.tokenInvalid, 403);
-
-  } else if (token == docs[0].token && docs[0].expire >= now.getTime() ){
-    next();
-
   } else {
-    return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
+    jwt.verify(token, configs.token.passcode, function (err, decoded) {
+      if(err){
+        return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
+      }
+      next();
+    })
   }
 }
 
@@ -78,15 +84,4 @@ exports.extractToken = function (req) {
     }
   }
   return token;
-}
-
-var tokenHandler = {
-  created : function(){
-    var moment = new Date();
-    return moment.getTime();
-  },
-  expire : function(){
-    var expiration = this.created() + configs.token.expire;
-    return expiration;
-  }
 }

@@ -27,17 +27,19 @@ exports.login = function(req,res){
     if (docs.length == 0) {
       status.handleError(res, "EMAIL NÃO ENCONTRADO", configs.messages.loginEmail, 401);
     } else{
-      auth.loginRegister(req, res, docs[0]._id, auth.loginHandler(req, res, docs), db);
+      status.handleResponse(res, auth.loginHandler(req, res, docs))
     }
   });
 };
 
 
 exports.provideAuthorization = function (req, res, next) {
-  database.searchData({ token : auth.extractToken(req) }, res, db, configs.collections.token, function(docs){
-    auth.handleAuthorization(req, res, next, docs);
-  });
+  auth.handleAuthorization(req, res, next)
 };
+
+exports.tokenRefresh = function(req, res){
+  auth.tokenRefresh(req, res)
+}
 
 
 exports.getContacts = function(req,res){
