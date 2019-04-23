@@ -26,11 +26,13 @@ route.connect(function() {
 
   app.get('/api/projects', route.getProjects);
 
-  app.get('/api/contacts/:id', route.getContactById);
+  app.get('/api/jobs', route.provideAuthorization, route.getJobs);
+
+  app.get('/api/contacts/:id', route.provideAuthorization, route.getContactById);
 
   app.put('/api/contacts/:id', route.provideAuthorization, route.updateUser)
 
-  app.post('/api/projects', route.AddProject);
+  app.post('/api/projects', route.provideAuthorization, route.AddProject);
 
   app.post('/api/contacts', route.provideAuthorization, route.registerUser);
 

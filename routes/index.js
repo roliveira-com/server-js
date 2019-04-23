@@ -61,6 +61,12 @@ exports.getProjects = function (req, res) {
   });
 };
 
+exports.getJobs = function (req, res) {
+  database.getData(res, db, configs.collections.jobs, function (docs) {
+    status.handleResponse(res, docs, 201);
+  });
+};
+
 exports.registerUser = function(req,res){
   var usuario = new user.User(req.body.nome, req.body.sobrenome, req.body.email, req.body.senha)
   if(usuario.invalid_model){

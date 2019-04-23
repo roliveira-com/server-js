@@ -25,20 +25,14 @@ exports.loginHandler = function(req,res,docs){
 
 exports.authCredentials = function(decoded = undefined, docs = undefined){
   return {
-    user: {
-      email: decoded ? decoded.sub : docs[0].email,
-      name: decoded ? decoded.data.nome : docs[0].nome,
-      surname: decoded ? decoded.data.sobrenome : docs[0].sobrenome
-    },
+    user: decoded ? decoded.sub : docs[0]._id,
     token: jwt.sign({
-      data: { ...docs[0], ...decoded },
-      sub: decoded ? decoded.sub : docs[0].email,
+      sub: decoded ? decoded.sub : docs[0]._id,
       iss: configs.token.issuer,
       exp: Math.floor(Date.now() / 1000) + (60 * 1)
     }, configs.token.passcode),
     refreshToken: jwt.sign({
-      data: { ...docs[0], ...decoded },
-      sub: decoded ? decoded.sub : docs[0].email,
+      sub: decoded ? decoded.sub : docs[0]._id,
       iss: configs.token.issuer,
       exp: Math.floor(Date.now() / 1000) + (60 * 2)
     }, configs.token.passcode),
