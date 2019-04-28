@@ -40,8 +40,7 @@ exports.authCredentials = function(decoded = undefined, docs = undefined){
 }
 
 exports.tokenRefresh = function(req,res){
-  if (!req.headers && req.headers.authorization) {
-    res.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
+  if (!req.body.refreshToken) {
     return status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
   } else {
     const token = exports.extractToken(req);
@@ -57,7 +56,6 @@ exports.tokenRefresh = function(req,res){
 exports.handleAuthorization = function (req, res, next) {
   const token = exports.extractToken(req);
   if(!token){
-    res.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
     status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
   } else {
     jwt.verify(token, configs.token.passcode, function (err, decoded) {
@@ -69,9 +67,22 @@ exports.handleAuthorization = function (req, res, next) {
   }
 }
 
+exports.splitToken = function(token){
+  const parts = token.split('.');
+  return parts[2];
+}
+
+exports.joinToken = function(token){
+  const issuer = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.";
+  const passcode = "eyJzdWIiOiI1YTkxYjEzMGVlOTY5NTFkN2E2NDlkMGYiLCJpc3MiOiJyb2xpdmVpcmEtYXBpIiwiZXhwIjoxNTU2MjQ3NTc0LCJpYXQiOjE1NTYyNDc1MTR9.";
+  return issuer + passcode + token;
+}
+
 exports.extractToken = function (req) {
   let token = undefined;
-  if (req.headers && req.headers.authorization) {
+  if (req.body.refreshToken) {
+    return req.body.refreshToken;
+  } else if (req.headers.authorization) {
     const parts = req.headers.authorization.split(' ');
     if (parts.length === 2 && parts[0] === 'Bearer') {
       token = parts[1];
