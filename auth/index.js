@@ -14,7 +14,7 @@ exports.loginHandler = function(req,res,docs){
   } else if (docs.length == 1) {
 
     if (hash(req.body.senha) == docs[0].senha) {
-      return exports.authCredentials(false, docs);
+      return status.handleResponse(res, exports.authCredentials(false, docs), 200);
 
     } else {
       return status.handleError(res, "SENHA INCORRETA", configs.messages.loginPassword, 403);

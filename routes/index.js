@@ -27,7 +27,7 @@ exports.login = function(req,res){
     if (docs.length == 0) {
       status.handleError(res, "EMAIL NÃO ENCONTRADO", configs.messages.loginEmail, 401);
     } else{
-      status.handleResponse(res, auth.loginHandler(req, res, docs))
+      auth.loginHandler(req, res, docs)
     }
   });
 };
