@@ -29,12 +29,12 @@ exports.authCredentials = function(decoded = undefined, docs = undefined){
     token: jwt.sign({
       sub: decoded ? decoded.sub : docs[0]._id,
       iss: configs.token.issuer,
-      exp: Math.floor(Date.now() / 1000) + (60 * 1)
+      exp: Math.floor(Date.now() / 1000) + (60 * 10)
     }, configs.token.passcode),
     refreshToken: jwt.sign({
       sub: decoded ? decoded.sub : docs[0]._id,
       iss: configs.token.issuer,
-      exp: Math.floor(Date.now() / 1000) + (60 * 2)
+      exp: Math.floor(Date.now() / 1000) + (60 * 20)
     }, configs.token.passcode),
   }
 }

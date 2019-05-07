@@ -6,7 +6,8 @@ exports.collections = {
   avatar: "avatars",
   projects: "projects", 
   token : "tokens",
-  jobs: "jobs"
+  jobs: "jobs",
+  themes: "theme"
 }
 
 exports.token = {

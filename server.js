@@ -25,8 +25,10 @@ route.connect(function() {
   app.get('/api/users', route.getContacts);
 
   app.get('/api/projects', route.getProjects);
-
+  
   app.get('/api/jobs', route.provideAuthorization, route.getJobs);
+  
+  app.get('/api/theme/:company', route.provideAuthorization, route.getTheme);
 
   app.get('/api/user/:id', route.provideAuthorization, route.getContactById);
 

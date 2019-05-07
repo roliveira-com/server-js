@@ -67,6 +67,16 @@ exports.getJobs = function (req, res) {
   });
 };
 
+exports.getTheme = function (req, res) {
+  database.searchData({ name: req.params.company }, res, db, configs.collections.themes, function(doc){
+    if(doc.length){
+      status.handleResponse(res, doc[0]);
+    }else{
+      status.handleError(res, "NOT FOUND", "Nenhum registro encontrado", 404);
+    }
+  })
+}
+
 exports.registerUser = function(req,res){
   var usuario = new user.User(req.body.nome, req.body.sobrenome, req.body.email, req.body.senha)
   if(usuario.invalid_model){
