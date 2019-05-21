@@ -14,13 +14,7 @@ exports.loginHandler = function(req,res,docs){
   } else if (docs.length == 1) {
 
     if (hash(req.body.senha) == docs[0].senha) {
-      var response = {
-        nome: docs[0].nome,
-        email: docs[0].email,
-        uid: docs[0]._id,
-        token: jwt.sign({ sub: docs[0].email, iss: configs.token.issuer }, configs.token.passcode )
-      };
-      return response;
+      return status.handleResponse(res, exports.authCredentials(false, docs), 200);
 
     } else {
       return status.handleError(res, "SENHA INCORRETA", configs.messages.loginPassword, 403);
@@ -29,64 +23,70 @@ exports.loginHandler = function(req,res,docs){
   }
 }
 
-exports.loginRegister = function(req, res, uid, objToken, db){
-  if (objToken == undefined){
-    return false;
+exports.authCredentials = function(decoded = undefined, docs = undefined){
+  return {
+    user: decoded ? decoded.sub : docs[0]._id,
+    token: jwt.sign({
+      sub: decoded ? decoded.sub : docs[0]._id,
+      iss: configs.token.issuer,
+      exp: Math.floor(Date.now() / 1000) + (60 * 10)
+    }, configs.token.passcode),
+    refreshToken: jwt.sign({
+      sub: decoded ? decoded.sub : docs[0]._id,
+      iss: configs.token.issuer,
+      exp: Math.floor(Date.now() / 1000) + (60 * 20)
+    }, configs.token.passcode),
+  }
+}
+
+exports.tokenRefresh = function(req,res){
+  if (!req.body.refreshToken) {
+    return status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
   } else {
-    var date = new Date();
-    db.collection(configs.collections.token).insertOne({
-      email: req.body.email,
-      uid: uid,
-      token: objToken.token,
-      created: tokenHandler.created(),
-      expire: tokenHandler.expire()
-    }, function (err, doc) {
-      if (err) throw err
-      objToken._id = doc.insertedId;
-      status.handleResponse(res, objToken, 201)
+    const token = exports.extractToken(req);
+    jwt.verify(token, configs.token.passcode, function (err, decoded) {
+      if (err) {
+        return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
+      }
+      status.handleResponse(res, exports.authCredentials(decoded, false), 200);
+    });
+  }
+}
+
+exports.handleAuthorization = function (req, res, next) {
+  const token = exports.extractToken(req);
+  if(!token){
+    status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
+  } else {
+    jwt.verify(token, configs.token.passcode, function (err, decoded) {
+      if(err){
+        return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
+      }
+      next();
     })
   }
 }
 
-exports.handleAuthorization = function (req, res, next, docs) {
-  let token = exports.extractToken(req);
-  let now = new Date();
-  if (!token) {
-    res.setHeader('WWW-Authenticate', 'Bearer token_type="JWT"');
-    status.handleError(res, "FORBIDDEN", configs.messages.authRequired, 401)
+exports.splitToken = function(token){
+  const parts = token.split('.');
+  return parts[2];
+}
 
-  } else if (docs.length > 1){
-    return status.handleError(res, "TOKEN DUPLICADO", configs.messages.authGeneric, 500);
-
-  } else if ( docs[0] == undefined || docs[0] == null){
-    return status.handleError(res, "FORBBIDEN", configs.messages.tokenInvalid, 403);
-
-  } else if (token == docs[0].token && docs[0].expire >= now.getTime() ){
-    next();
-
-  } else {
-    return status.handleError(res, "FORBBIDEN", configs.messages.tokenExpired, 403);
-  }
+exports.joinToken = function(token){
+  const issuer = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.";
+  const passcode = "eyJzdWIiOiI1YTkxYjEzMGVlOTY5NTFkN2E2NDlkMGYiLCJpc3MiOiJyb2xpdmVpcmEtYXBpIiwiZXhwIjoxNTU2MjQ3NTc0LCJpYXQiOjE1NTYyNDc1MTR9.";
+  return issuer + passcode + token;
 }
 
 exports.extractToken = function (req) {
   let token = undefined;
-  if (req.headers && req.headers.authorization) {
+  if (req.body.refreshToken) {
+    return req.body.refreshToken;
+  } else if (req.headers.authorization) {
     const parts = req.headers.authorization.split(' ');
     if (parts.length === 2 && parts[0] === 'Bearer') {
       token = parts[1];
     }
   }
   return token;
-}
-
-var tokenHandler = {
-  created : function(){
-    var moment = new Date();
-    return moment.getTime();
-  },
-  expire : function(){
-    var expiration = this.created() + configs.token.expire;
-    return expiration;
-  }
 }

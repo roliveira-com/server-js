@@ -27,17 +27,19 @@ exports.login = function(req,res){
     if (docs.length == 0) {
       status.handleError(res, "EMAIL NÃO ENCONTRADO", configs.messages.loginEmail, 401);
     } else{
-      auth.loginRegister(req, res, docs[0]._id, auth.loginHandler(req, res, docs), db);
+      auth.loginHandler(req, res, docs)
     }
   });
 };
 
 
 exports.provideAuthorization = function (req, res, next) {
-  database.searchData({ token : auth.extractToken(req) }, res, db, configs.collections.token, function(docs){
-    auth.handleAuthorization(req, res, next, docs);
-  });
+  auth.handleAuthorization(req, res, next)
 };
+
+exports.tokenRefresh = function(req, res){
+  auth.tokenRefresh(req, res)
+}
 
 
 exports.getContacts = function(req,res){
@@ -58,6 +60,22 @@ exports.getProjects = function (req, res) {
     status.handleResponse(res, docs, 201);
   });
 };
+
+exports.getJobs = function (req, res) {
+  database.getData(res, db, configs.collections.jobs, function (docs) {
+    status.handleResponse(res, docs, 201);
+  });
+};
+
+exports.getTheme = function (req, res) {
+  database.searchData({ name: req.params.company }, res, db, configs.collections.themes, function(doc){
+    if(doc.length){
+      status.handleResponse(res, doc[0]);
+    }else{
+      status.handleError(res, "NOT FOUND", "Nenhum registro encontrado", 404);
+    }
+  })
+}
 
 exports.registerUser = function(req,res){
   var usuario = new user.User(req.body.nome, req.body.sobrenome, req.body.email, req.body.senha)
